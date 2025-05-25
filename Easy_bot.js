@@ -4,11 +4,11 @@ const EMPTY = 0;
 const PLAYER = 1; // Người chơi
 const AI = 2; // Bot
 
-// Sao chép bàn cờ
+// Sao chép bàn cờ (vì AI cần thử nghiệm nhiều nước đi)
+// Hàm này sẽ tạo một bản sao của bàn cờ hiện tại để không làm thay đổi bàn cờ gốc
 function copyBoard(board) {
   return board.map((row) => row.slice());
 }
-
 // Kiểm tra nước đi hợp lệ
 function isValidMove(board, col) {
   return board[0][col] === EMPTY;
@@ -83,7 +83,8 @@ function winningMove(board, piece) {
   return false;
 }
 
-// Hàm đánh giá đơn giản
+// Hàm đánh giá đơn giản sử dụng 2 dòng for thay vì 4 dòng
+//Vì vậy, nó sẽ không kiểm tra tất cả các hàng, cột và đường chéo đảm bảo bot không quá khó
 function evaluateBoard(board, piece) {
   const opponent = piece === AI ? PLAYER : AI;
 
@@ -93,7 +94,7 @@ function evaluateBoard(board, piece) {
   // Ưu tiên 3 quân liên tiếp
   let score = 0;
 
-  // Kiểm tra các hàng để tìm các đoạn có 2-3 quân
+  // Kiểm tra các hàng để tìm các đoạn có 2-3 quân 
   for (let r = 0; r < board.length; r++) {
     for (let c = 0; c < board[0].length - 3; c++) {
       let window = board[r].slice(c, c + 4);
@@ -108,7 +109,7 @@ function evaluateBoard(board, piece) {
       score += evaluateWindow(window, piece);
     }
   }
-
+  //Mỗi lần lặp sẽ gọi hàm evaluateWindow nhiều lầnlần để đánh giá từng đoạn 4 ô 
   return score;
 }
 function evaluateWindow(window, piece) {
